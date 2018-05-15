@@ -9,7 +9,16 @@ class PicSpider(scrapy.Spider):
     start_urls = ['http://www.mmjpg.com']
 
     def pic_parse(self, response):
-        pass
+        soup = BeautifulSoup(response.text, 'lxml')
+        for content in soup.find_all(class_='content'):
+            title = soup.h2.string
+            img_url = re.findall('<div.*?src="(http:.*?jpg)".*?</div>', str(content))[0]
+        for url in soup.find_all(class_='page'):
+            next_page = 'http://www.mmjpg.com' + str(re.findall('<div.*?href="(/mm/\d+/\d+)".*?</div>', str(url))[0])
+            print(next_page)
+        print(title, img_url)
+        yield scrapy.Request(url=next_page, callback=self.pic_parse)
+
 
     def parse(self, response):
         soup = BeautifulSoup(response.text, 'lxml')
@@ -25,7 +34,6 @@ class PicSpider(scrapy.Spider):
         print(contents_dict)
         for key in contents_dict.keys():
             yield scrapy.Request(url=contents_dict[key], callback=self.pic_parse)
-
 
 
 
