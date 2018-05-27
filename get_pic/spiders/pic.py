@@ -9,19 +9,16 @@ class PicSpider(scrapy.Spider):
     start_urls = ['http://www.mmjpg.com/']
 
     def parse(self, response):
+        # print(response.text)
+        # contents_urls = {}
+        # for key in response.xpath('//div[@class="pic"]/ul/li/a//@alt').extract():
+        #     contents_urls[key] = response.xpath('//div[@class="pic"]//a[@alt="' + key + '"]').extract()
+        # print(contents_urls)
         urls = response.xpath('//div[@class="pic"]/ul/li/a/@href').extract()
-        print(urls)
+        # content = response.xpath('//div[@class="pic"]/ul/li/a//@alt').extract()
+        # print(urls, content)
         for url in urls:
             yield scrapy.Request(url=url, callback=self.pic_parse)
-        # soup = BeautifulSoup(response.text, 'lxml')
-        # for ul in soup.find_all('ul'):
-        #     contents = ul.find_all('li')
-        #     contents_dict = {}
-        # for i in range(len(contents)):
-        #     content = re.findall('<a.href="(http.*?/\d+)".*?<img\salt="(.*?)".*?</a>', str(contents[i]))[0]
-        #     contents_dict[content[1]] = content[0]
-        # for key in contents_dict.keys():
-        #     yield scrapy.Request(url=contents_dict[key], callback=self.pic_parse)
 
     def pic_parse(self, response):
         title = response.xpath('//div[@class="content"]/a//@alt').extract()[0]

@@ -7,18 +7,32 @@
 
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.exceptions import DropItem
-from scrapy.http import Request
-
-# class GetPicPipeline(object):
-#     def process_item(self, item, spider):
-#         return item
+from scrapy import Request
+import json
+import codecs
+class GetPicPipeline(object):
+    def __init__(self):
+        self.f = codecs.open('content.json', 'w', encoding='utf-8')
+    def process_item(self, item, spider):
+        if item['title']:
+            line = json.dumps(dict(item), ensure_ascii=False) + "\n"
+            self.f.write(line)
+        return item
 
 # 下载图片Pipeline
 class DownImagePipeline(ImagesPipeline):
     def get_media_requests(self, item, info):
         for image_url in item['pic_url']:
-            yield Request(image_url)
+            yield Request(image_url, meta={'item': item})
+
+    def item_completed(self, results, item, info):
+        image_paths = [x['path'] for ok, x in results if ok]
+        if not image_paths:
+            raise DropItem("Item contains no images")
+            item['image_paths'] = image_paths
+        return item
 
     def file_path(self, request, response=None, info=None):
-        image_guid = request.url.split('/')[-1]
+        item = request.meta['item']
+        image_guid = item['title']+'.'+ request.url.split('/')[-1].split('.')[-1]
         return 'full/%s' % (image_guid)
