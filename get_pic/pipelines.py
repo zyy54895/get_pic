@@ -14,9 +14,9 @@ class GetPicPipeline(object):
     def __init__(self):
         self.f = codecs.open('content.json', 'w', encoding='utf-8')
     def process_item(self, item, spider):
-        if item['title']:
-            line = json.dumps(dict(item), ensure_ascii=False) + "\n"
-            self.f.write(line)
+
+        line = json.dumps(dict(item), ensure_ascii=False) + "\n"
+        self.f.write(line)
         return item
 
 # 下载图片Pipeline
@@ -35,4 +35,5 @@ class DownImagePipeline(ImagesPipeline):
     def file_path(self, request, response=None, info=None):
         item = request.meta['item']
         image_guid = item['title']+'.'+ request.url.split('/')[-1].split('.')[-1]
-        return 'full/%s' % (image_guid)
+        filepath = u'full/{0}/{1}'.format(item['content'], image_guid)
+        return filepath
