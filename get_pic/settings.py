@@ -39,10 +39,11 @@ ROBOTSTXT_OBEY = True
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
+DEFAULT_REQUEST_HEADERS = {
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'en',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0',
+}
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
@@ -52,9 +53,22 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'get_pic.middlewares.GetPicDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   # 'daili.middlewares.DailiDownloaderMiddleware': 543,
+    'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware' : None,
+    'get_pic.middlewares.RotateUserAgentMiddleware': 400,
+     'get_pic.middlewares.MyproxiesSpiderMiddleware': 100
+}
+
+IPPOOL=[
+	{"ipaddr":"27.40.156.14:61234"},
+	{"ipaddr":"115.204.28.237:6666"},
+	{"ipaddr":"61.135.217.7:80"},
+	{"ipaddr":"122.114.31.177:808"},
+	{"ipaddr":"119.28.194.66:8888"},
+	{"ipaddr":"14.118.254.243:6666"},
+	{"ipaddr":"106.8.17.55:60443"}
+]
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
